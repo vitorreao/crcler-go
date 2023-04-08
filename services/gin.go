@@ -13,19 +13,16 @@
  * limitations under the License.
  */
 
-package main
+package services
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/vitorreao/crcler-go/services"
+	"github.com/vitorreao/crcler-go/accounts"
 	"go.uber.org/fx"
 )
 
-func main() {
-	fx.New(
-		fx.Provide(services.NewGinService),
-		fx.Invoke(func(srv *gin.Engine) {
-			srv.Run(":8080")
-		}),
-	).Run()
+func NewGinService(lc fx.Lifecycle) *gin.Engine {
+	srv := gin.Default()
+	accounts.AddAccountRoutes(srv)
+	return srv
 }

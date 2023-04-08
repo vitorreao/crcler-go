@@ -13,19 +13,29 @@
  * limitations under the License.
  */
 
-package main
+package handlers
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
-	"github.com/vitorreao/crcler-go/services"
-	"go.uber.org/fx"
+	"github.com/google/uuid"
 )
 
-func main() {
-	fx.New(
-		fx.Provide(services.NewGinService),
-		fx.Invoke(func(srv *gin.Engine) {
-			srv.Run(":8080")
-		}),
-	).Run()
+// Account represents data about a user account.
+type Account struct {
+	UUID         uuid.UUID `json:"uuid"`
+	CreatedAt    time.Time `json:"created_at"`
+	LastUpdateAt time.Time `json:"last_update_at"`
+}
+
+// GetAccounts responds with the list of all Accounts as JSON.
+func GetAccounts(c *gin.Context) {
+	exampleAccountUUID, _ := uuid.NewRandom()
+	nowUtc := time.Now().UTC()
+	exampleAccounts := []Account{
+		{UUID: exampleAccountUUID, CreatedAt: nowUtc, LastUpdateAt: nowUtc},
+	}
+	c.IndentedJSON(http.StatusOK, exampleAccounts)
 }
